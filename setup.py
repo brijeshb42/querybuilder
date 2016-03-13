@@ -16,4 +16,5 @@ setup(
     keywords=['SQL', 'peewee', 'querybuilder'],
     license="http://www.opensource.org/licenses/mit-license.php",
     classifiers=[],
+    test_suite="tests"
 )
