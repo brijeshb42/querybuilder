@@ -27,8 +27,8 @@ class Field(object):
     _two_arg = ('between',)
     _multi_arg = ('in_', 'contains_any', 'contains_all', 'contains')
 
-    @staticmethod
-    def __one_arg_func(method, field):
+    @classmethod
+    def __one_arg_func(cls, method, field):
         def _func(*args):
             if len(args) != 1:
                 raise ValueError(
@@ -38,8 +38,8 @@ class Field(object):
                 field, args[0])
         return _func
 
-    @staticmethod
-    def __two_arg_func(method, field):
+    @classmethod
+    def __two_arg_func(cls, method, field):
         def _func(*args):
             if len(args) != 2:
                 raise ValueError(
@@ -50,8 +50,8 @@ class Field(object):
                 field, ", ".join([str(arg) for arg in args]))
         return _func
 
-    @staticmethod
-    def __multi_arg_func(method, field):
+    @classmethod
+    def __multi_arg_func(cls, method, field):
         def _func(*args):
             if len(args) < 1:
                 raise ValueError('No arguments given')
@@ -61,12 +61,12 @@ class Field(object):
         return _func
 
     def __getattr__(self, attr):
-        if attr in Field._one_arg:
-            return Field.__one_arg_func(attr, self.field)
-        elif attr in Field._two_arg:
-            return Field.__two_arg_func(attr, self.field)
-        elif attr in Field._multi_arg:
-            return Field.__multi_arg_func(attr, self.field)
+        if attr in self._one_arg:
+            return self.__one_arg_func(attr, self.field)
+        elif attr in self._two_arg:
+            return self.__two_arg_func(attr, self.field)
+        elif attr in self._multi_arg:
+            return self.__multi_arg_func(attr, self.field)
         else:
             raise AttributeError('{} not found'.format(attr))
 
