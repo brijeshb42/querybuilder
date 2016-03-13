@@ -4,7 +4,7 @@ setup(
     name='querybuilder',
     packages=['querybuilder'],
     version='0.1.0',
-    include_package_data=False,
+    include_package_data=True,
     description=(
         'A library to build human '
         'readable SQL query string using a pythonic API'),
