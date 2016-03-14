@@ -2,7 +2,12 @@ import ast
 import operator
 import datetime
 
-from peewee import DateTimeField
+try:
+    import peewee
+except ImportError:
+    _has_peewee = False
+else:
+    _has_peewee = True
 
 
 def in_(lhs, rhs):
@@ -12,7 +17,7 @@ def in_(lhs, rhs):
 def between_(lhs, rhs):
     start = rhs[0]
     end = rhs[1]
-    if isinstance(lhs, DateTimeField):
+    if isinstance(lhs, peewee.DateTimeField):
         start = datetime.datetime.strptime(start, '%Y-%m-%d')
         end = datetime.datetime.strptime(end, '%Y-%m-%d')
     return lhs.between(start, end)
@@ -85,5 +90,7 @@ def travel_node(node, Model):
 
 
 def get_expression_for(Model, dsl):
+    if not _has_peewee:
+        raise ImportError('Peewee is required to do this.')
     node = ast.parse(dsl, mode='eval')
     return travel_node(node.body, Model)
