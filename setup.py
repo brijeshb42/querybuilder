@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='querybuilder',
-    version='0.1.0',
+    version='0.1.1',
     include_package_data=True,
     packages=find_packages(),
     description=(
@@ -12,7 +12,7 @@ setup(
     author='Brijesh Bittu',
     author_email='brijeshb42@gmail.com',
     url='https://github.com/brijeshb42/querybuilder',
-    download_url='https://github.com/brijeshb42/querybuilder/tarball/0.1.0',
+    download_url='https://github.com/brijeshb42/querybuilder/tarball/0.1.1',
     keywords=['SQL', 'peewee', 'querybuilder'],
     license='http://www.opensource.org/licenses/mit-license.php',
     classifiers=[],
