@@ -52,6 +52,10 @@ class QbTest(unittest.TestCase):
         q1 = F('pageviews').between(1, 2)
         self.assertEqual(q1, 'BETWEEN("pageviews", 1, 2)')
 
+        q1 = F('published').between("2016-03-07", "2016-03-08")
+        self.assertEqual(
+            q1, 'BETWEEN("published", "2016-03-07", "2016-03-08")')
+
         self.assertRaises(ValueError, F('pageviews').eq, 1, 2)
         self.assertRaises(ValueError, F('pageviews').ne, 1, 2)
         self.assertRaises(ValueError, F('pageviews').gt, 1, 2)

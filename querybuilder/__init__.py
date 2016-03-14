@@ -5,6 +5,16 @@ def get_normalized_func_name(func):
     return func
 
 
+def _stringify_args(*args):
+    mod_args = []
+    for arg in args:
+        if isinstance(arg, basestring):
+            mod_args.append('"{}"'.format(arg))
+        else:
+            mod_args.append(arg)
+    return mod_args
+
+
 class _MetaField(type):
 
     """
@@ -33,9 +43,11 @@ class Field(object):
             if len(args) != 1:
                 raise ValueError(
                     '{} accepts only one argument.'.format(method))
+            if isinstance(args[0], basestring):
+                args[0] = '"{}"'.format(args[0])
             return '{}("{}", {})'.format(
                 get_normalized_func_name(method),
-                field, args[0])
+                field, _stringify_args(*args)[0])
         return _func
 
     @classmethod
@@ -47,7 +59,7 @@ class Field(object):
                         method, len(args)))
             return '{}("{}", {})'.format(
                 get_normalized_func_name(method),
-                field, ", ".join([str(arg) for arg in args]))
+                field, ", ".join([str(arg) for arg in _stringify_args(*args)]))
         return _func
 
     @classmethod
@@ -57,7 +69,7 @@ class Field(object):
                 raise ValueError('No arguments given')
             return '{}("{}", {})'.format(
                 get_normalized_func_name(method),
-                field, ", ".join([str(arg) for arg in args]))
+                field, ", ".join([str(arg) for arg in _stringify_args(*args)]))
         return _func
 
     def __getattr__(self, attr):
