@@ -33,7 +33,7 @@ class _MetaField(type):
 
 class Field(object):
     __metaclass__ = _MetaField
-    _one_arg = ('eq', 'ne', 'gt', 'lt', 'ge', 'le')
+    _one_arg = ('eq', 'ne', 'gt', 'lt', 'ge', 'le', 'startswith')
     # _two_arg = ('between',)
     _multi_arg = ('between', 'in_', 'contains_any', 'contains_all', 'contains')
 
