@@ -54,7 +54,8 @@ def travel_node(query, Model, operators):
     for key in query:
         if key in GROUP:
             exp = []
-            exp.append(travel_node(query[key], Model, operators))
+            for arg in query[key]:
+                exp.append(travel_node(arg, Model, operators))
             return reduce(GROUP[key], exp)
         elif key in operators:
             op = operators[key]
@@ -68,4 +69,4 @@ def travel_node(query, Model, operators):
 def get_expression_for(Model, query, operators=None):
     if operators:
         OPERATORS.update(operators)
-    return travel_node(query, Model, operators)
+    return travel_node(query, Model, OPERATORS)
