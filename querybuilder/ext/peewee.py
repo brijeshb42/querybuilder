@@ -1,5 +1,8 @@
-import operator
 import ast
+import operator
+import datetime
+
+from peewee import DateTimeField
 
 
 def in_(lhs, rhs):
@@ -7,7 +10,12 @@ def in_(lhs, rhs):
 
 
 def between_(lhs, rhs):
-    return lhs.between(rhs[0], rhs[1])
+    start = rhs[0]
+    end = rhs[1]
+    if isinstance(lhs, DateTimeField):
+        start = datetime.datetime.strptime(start, '%Y-%m-%d')
+        end = datetime.datetime.strptime(end, '%Y-%m-%d')
+    return lhs.between(start, end)
 
 
 def contains_(lhs, rhs):
