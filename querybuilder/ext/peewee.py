@@ -1,4 +1,3 @@
-import ast
 import operator
 
 
@@ -43,43 +42,30 @@ OPERATORS = {
     'BETWEEN': between_
 }
 
-MULTI_VALUE = ('IN', 'BETWEEN', 'CONTAINS_ANY')
+MULTI_VALUE = ('IN', 'BETWEEN', 'CONTAINS_ANY', 'CONTAINS_ALL')
 
 GROUP = {
     'AND': operator.and_,
     'OR': operator.or_
 }
 
-# stack = []
 
-
-def travel_node(node, Model, operators):
-    if isinstance(node, ast.Call):
-        if node.func.id in operators:
-            if len(node.args) < 2 or not isinstance(node.args[0], ast.Str):
-                raise Exception(
-                    'First Argument of '
-                    '{} should be a string'.format(node.func.id))
-            op = operators[node.func.id]
-            field = Model._meta.fields[node.args[0].s]
-            if node.func.id in MULTI_VALUE:
-                value = [ast.literal_eval(arg) for arg in node.args[1:]]
-            else:
-                value = ast.literal_eval(node.args[1])
-            return op(field, value)
-        elif node.func.id in GROUP:
+def travel_node(query, Model, operators):
+    for key in query:
+        if key in GROUP:
             exp = []
-            for arg in node.args:
-                exp.append(travel_node(arg, Model, operators))
-            return reduce(GROUP[node.func.id], exp)
-        else:
-            raise Exception(
-                'Invalid Query. {} '
-                'not supported.'.format(node.func.id))
+            exp.append(travel_node(query[key], Model, operators))
+            return reduce(GROUP[key], exp)
+        elif key in operators:
+            op = operators[key]
+            for key1, val in query[key].iteritems():
+                field = Model._meta.fields[key1]
+                value = val
+                break
+            return op(field, value)
 
 
-def get_expression_for(Model, dsl, operators=None):
+def get_expression_for(Model, query, operators=None):
     if operators:
         OPERATORS.update(operators)
-    node = ast.parse(dsl, mode='eval')
-    return travel_node(node.body, Model, operators)
+    return travel_node(query, Model, operators)

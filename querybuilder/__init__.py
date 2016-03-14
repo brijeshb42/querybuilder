@@ -34,8 +34,8 @@ class _MetaField(type):
 class Field(object):
     __metaclass__ = _MetaField
     _one_arg = ('eq', 'ne', 'gt', 'lt', 'ge', 'le')
-    _two_arg = ('between',)
-    _multi_arg = ('in_', 'contains_any', 'contains_all', 'contains')
+    # _two_arg = ('between',)
+    _multi_arg = ('between', 'in_', 'contains_any', 'contains_all', 'contains')
 
     @classmethod
     def __one_arg_func(cls, method, field):
@@ -43,40 +43,43 @@ class Field(object):
             if len(args) != 1:
                 raise ValueError(
                     '{} accepts only one argument.'.format(method))
-            if isinstance(args[0], basestring):
-                args[0] = '"{}"'.format(args[0])
-            return '{}("{}", {})'.format(
-                get_normalized_func_name(method),
-                field, _stringify_args(*args)[0])
+            # if isinstance(args[0], basestring):
+                # args[0] = '"{}"'.format(args[0])
+            # return '{}("{}", {})'.format(
+            #     get_normalized_func_name(method),
+            #     field, _stringify_args(*args)[0])
+            return {get_normalized_func_name(method): {field: args[0]}}
         return _func
 
-    @classmethod
-    def __two_arg_func(cls, method, field):
-        def _func(*args):
-            if len(args) != 2:
-                raise ValueError(
-                    '{} accepts two arguments, {} given.'.format(
-                        method, len(args)))
-            return '{}("{}", {})'.format(
-                get_normalized_func_name(method),
-                field, ", ".join([str(arg) for arg in _stringify_args(*args)]))
-        return _func
+    # @classmethod
+    # def __two_arg_func(cls, method, field):
+    #     def _func(*args):
+    #         if len(args) != 2:
+    #             raise ValueError(
+    #                 '{} accepts two arguments, {} given.'.format(
+    #                     method, len(args)))
+    #         # return '{}("{}", {})'.format(
+    #         #     get_normalized_func_name(method),
+    #         #   field, ", ".join([str(arg) for arg in _stringify_args(*args)]))
+    #         return {get_normalized_func_name(method): {field: args}}
+    #     return _func
 
     @classmethod
     def __multi_arg_func(cls, method, field):
         def _func(*args):
             if len(args) < 1:
                 raise ValueError('No arguments given')
-            return '{}("{}", {})'.format(
-                get_normalized_func_name(method),
-                field, ", ".join([str(arg) for arg in _stringify_args(*args)]))
+            # return '{}("{}", {})'.format(
+            #     get_normalized_func_name(method),
+            #   field, ", ".join([str(arg) for arg in _stringify_args(*args)]))
+            return {get_normalized_func_name(method): {field: args}}
         return _func
 
     def __getattr__(self, attr):
         if attr in self._one_arg:
             return self.__one_arg_func(attr, self.field)
-        elif attr in self._two_arg:
-            return self.__two_arg_func(attr, self.field)
+        # elif attr in self._two_arg:
+        #     return self.__two_arg_func(attr, self.field)
         elif attr in self._multi_arg:
             return self.__multi_arg_func(attr, self.field)
         else:
@@ -110,10 +113,12 @@ class Field(object):
 def AND(*args):
     if len(args) < 1:
         raise ValueError('AND accepts more than Zero argumnets')
-    return "AND({})".format(", ".join(args))
+    # return "AND({})".format(", ".join(args))
+    return {"AND": args}
 
 
 def OR(*args):
     if len(args) < 1:
         raise ValueError('AND accepts more than Zero argumnets')
-    return "OR({})".format(", ".join(args))
+    # return "OR({})".format(", ".join(args))
+    return {"OR": args}
