@@ -80,8 +80,6 @@ def travel_node(node, Model, operators):
 
 def get_expression_for(Model, dsl, operators=None):
     if operators:
-        operators = OPERATORS.update(operators)
-    else:
-        operators = OPERATORS
+        OPERATORS.update(operators)
     node = ast.parse(dsl, mode='eval')
     return travel_node(node.body, Model, operators)
