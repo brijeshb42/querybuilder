@@ -1,13 +1,5 @@
 import ast
 import operator
-import datetime
-
-try:
-    import peewee
-except ImportError:
-    _has_peewee = False
-else:
-    _has_peewee = True
 
 
 def in_(lhs, rhs):
@@ -17,9 +9,6 @@ def in_(lhs, rhs):
 def between_(lhs, rhs):
     start = rhs[0]
     end = rhs[1]
-    if isinstance(lhs, peewee.DateTimeField):
-        start = datetime.datetime.strptime(start, '%Y-%m-%d')
-        end = datetime.datetime.strptime(end, '%Y-%m-%d')
     return lhs.between(start, end)
 
 
@@ -64,14 +53,14 @@ GROUP = {
 # stack = []
 
 
-def travel_node(node, Model):
+def travel_node(node, Model, operators):
     if isinstance(node, ast.Call):
-        if node.func.id in OPERATORS:
+        if node.func.id in operators:
             if len(node.args) < 2 or not isinstance(node.args[0], ast.Str):
                 raise Exception(
                     'First Argument of '
                     '{} should be a string'.format(node.func.id))
-            op = OPERATORS[node.func.id]
+            op = operators[node.func.id]
             field = Model._meta.fields[node.args[0].s]
             if node.func.id in MULTI_VALUE:
                 value = [ast.literal_eval(arg) for arg in node.args[1:]]
@@ -81,7 +70,7 @@ def travel_node(node, Model):
         elif node.func.id in GROUP:
             exp = []
             for arg in node.args:
-                exp.append(travel_node(arg, Model))
+                exp.append(travel_node(arg, Model, operators))
             return reduce(GROUP[node.func.id], exp)
         else:
             raise Exception(
@@ -89,8 +78,10 @@ def travel_node(node, Model):
                 'not supported.'.format(node.func.id))
 
 
-def get_expression_for(Model, dsl):
-    if not _has_peewee:
-        raise ImportError('Peewee is required to do this.')
+def get_expression_for(Model, dsl, operators=None):
+    if operators:
+        operators = OPERATORS.update(operators)
+    else:
+        operators = OPERATORS
     node = ast.parse(dsl, mode='eval')
-    return travel_node(node.body, Model)
+    return travel_node(node.body, Model, operators)
