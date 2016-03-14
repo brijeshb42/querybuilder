@@ -14,7 +14,10 @@ setup(
     url='https://github.com/brijeshb42/querybuilder',
     download_url='https://github.com/brijeshb42/querybuilder/tarball/0.1.0',
     keywords=['SQL', 'peewee', 'querybuilder'],
-    license="http://www.opensource.org/licenses/mit-license.php",
+    license='http://www.opensource.org/licenses/mit-license.php',
     classifiers=[],
-    test_suite="tests"
+    test_suite='tests',
+    extras_require={
+        'peewee': ['peewee']
+    }
 )
