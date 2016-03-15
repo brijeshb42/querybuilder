@@ -93,3 +93,12 @@ class QbTest(unittest.TestCase):
         res = {"OR": ({"AND": ({"GE": {"pageviews": 100}}, {"EQ": {"series_id": 1}})},
                 {"AND": ({"LE": {"pageviews": 1000}}, {"NE": {"series_id": 0}})})}
         self.assertEqual(cmp(q1, res), 0)
+
+    def test_multi_arg(self):
+        q1 = F("meta").contains({'type': 1})
+        res = {"CONTAINS": {"meta": {'type': 1}}}
+        self.assertEqual(cmp(q1, res), 0)
+
+        q1 = F("meta").contains({'type': 1}, {'genre': 1})
+        res = {"CONTAINS": {"meta": ({'type': 1}, {'genre': 1})}}
+        self.assertEqual(cmp(q1, res), 0)

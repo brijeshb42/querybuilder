@@ -8,7 +8,6 @@ CREATE TABLE article (
     created timestamp without time zone NOT NULL,
     title character varying(255) NOT NULL,
     type_id integer NOT NULL,
-    topic_id integer NOT NULL,
     author_ids integer[] NOT NULL,
     category_ids integer[],
     tags character varying(255)[],
@@ -203,4 +202,42 @@ query = OR(
     AND(F("pageviews") >= 100, F("author_id") == 1),
     AND(F("pageviews") <= 1000, F("author_id") != 0)
 )
+```
+
+### Example usage with Peewee ORM using builtin extension.
+
+> This module contains an implementation for [Peewee](http://peewee-orm.com) ORM that takes as arguments, the Peewee model and the JSON query and gives an `expression` that can be directly passed as an argument in the `where()` method of the model:
+
+```python
+import peewee
+from querybuilder.helpers import AND, OR, Field as F
+from querybuilder.ext.peewee import get_expression_for
+
+
+class Article(peewee.Model):
+    id = IntegerField(primary_key=True)
+    title = CharField(null=False, unique=False, index=True)
+    permalink = CharField(default=None, unique=True, null=True)
+    type_id = IntegerField(default=1, index=True)
+    author_ids = ArrayField(index=True)
+    category_ids = ArrayField(default=[], null=True, index=True)
+    tags = ArrayField(CharField, null=True, default=[], index=True)
+    keywords = ArrayField(CharField, null=True, default=[], index=False)  # SEO
+    summary = TextField(null=True)
+    content = TextField(default='')
+    cover = BinaryJSONField(default={})
+    editors_pick = BooleanField(default=False)
+    pageviews = BigIntegerField(default=0)
+    updated = DateTimeField(null=False, default=datetime.datetime.utcnow)
+    published = DateTimeField(null=False, default=None, index=True)
+    cust_meta = BinaryJSONField(default={}, index=True)
+
+query = OR(
+    AND(F("pageviews") >= 100, F("author_ids").contains(1)),
+    AND(F("pageviews") <= 1000, F("type_id") != 0)
+)
+
+expression = get_expression_for(PeeweeModel, query)
+
+articles = Article.select().where(expression).execute()
 ```
