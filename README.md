@@ -119,7 +119,7 @@ For all articles with `pageviews` between 10000 and 15000 and whose `author_ids`
 
 #### Requirements
 
-* If there is only one condition, like `pageviews` > 100, the query can directly contain outermost key as on of `EQ, NE, GT, GE, LT, LE, STARTSWITH, CONTAINS, CONTAINS_ALL, CONTAINS_ANY, BETWEEN`.
+* If there is only one condition, like `pageviews` > 100, the query can directly contain outermost key as one of `EQ, NE, GT, GE, LT, LE, STARTSWITH, CONTAINS, CONTAINS_ALL, CONTAINS_ANY, BETWEEN`.
 
 example:
 ```json

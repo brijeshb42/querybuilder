@@ -92,12 +92,10 @@ class Field(object):
 def AND(*args):
     if len(args) < 1:
         raise ValueError('AND accepts more than Zero argumnets')
-    # return "AND({})".format(", ".join(args))
     return {"AND": args}
 
 
 def OR(*args):
     if len(args) < 1:
         raise ValueError('AND accepts more than Zero argumnets')
-    # return "OR({})".format(", ".join(args))
     return {"OR": args}

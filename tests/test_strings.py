@@ -1,5 +1,5 @@
 import unittest
-from querybuilder import AND, OR, Field as F
+from querybuilder.helpers import AND, OR, Field as F
 
 
 class QbTest(unittest.TestCase):
