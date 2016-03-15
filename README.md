@@ -36,10 +36,10 @@ CREATE TABLE article (
       }
    }
    ```
-   Same structure if for:
+   Same structure is for:
 
    | Condition     | JSON KEY   | Symbol  | JSON Query |
-   | ------------- |:-----------:|:-----:| ------:|
+   | ------------- |:----------- |:----- |:------ |
    | Less than | LT | < | `{"LT": {"type_id": 2}}` |
    | Less than or Equal to | LE | <= | `{"LE": {"type_id": 2}}` |
    | Greater than | GT | > | `{"GT": {"type_id": 2}}` |
