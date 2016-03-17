@@ -59,7 +59,7 @@ def travel_node(query, Model, operators):
             return reduce(GROUP[key], exp)
         elif key in operators:
             op = operators[key]
-            for key1, val in query[key].iteritems():
+            for key1, val in query[key].items():
                 field = Model._meta.fields[key1]
                 value = val
                 break
