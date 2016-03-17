@@ -1,4 +1,5 @@
 import operator
+from functools import reduce
 
 
 def in_(lhs, rhs):
