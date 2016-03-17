@@ -4,7 +4,7 @@ description = (
     'An SQL query building specification to be used'
     ' in conjunction with REST APIs and its implementation for peewee.')
 long_desc = description
-with open("README.rst") as f:
+with open("README.rst", encoding='ascii') as f:
     long_desc = f.read()
 
 setup(
