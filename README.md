@@ -56,7 +56,7 @@ For all articles where `type_id` is in `[1, 2, 3]`, the JSON query will be:
 ```
 
 ##### BETWEEN
-For all articles with `pageviews` between 10000 and 15000, the JSON query will be:
+For all articles with `pageviews` between 10000 and 15000, the JSON query will be (First value in array is the lower limit and the second value is the upper limit):
 ```json
 {
    "BETWEEN": {
